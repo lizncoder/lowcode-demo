@@ -1,9 +1,10 @@
 import { FC, createElement } from "react";
-import { Button, Space } from "antd";
+import { Button } from "antd";
 import { useDrop } from "react-dnd";
 import { Component } from "@/editor/stores/components";
 import { ItemType } from "@/editor/item-type";
 import { useComponents } from "@/editor/stores/components";
+import Space from "@/editor/components/space";
 const ComponentMap: { [key: string]: any } = {
   Button: Button,
   Space: Space,
@@ -35,7 +36,7 @@ const index: FC = () => {
         return;
       }
       return {
-        id: 1,
+        id: 0,
       };
     },
     collect: (monitor) => ({

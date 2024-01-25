@@ -11,18 +11,26 @@ const Material: FC = () => {
    * 拖拽结束，添加组件到画布
    * @param dropResult
    */
-  const onDragEnd = (dropResult: { name: string; props: any }) => {
-    addComponent({
-      id: new Date().getTime(),
-      name: dropResult.name,
-      props: dropResult.props,
-    });
+  const onDragEnd = (dropResult: { name: string; id: number; props: any }) => {
+    addComponent(
+      {
+        id: new Date().getTime(),
+        name: dropResult.name,
+        props: dropResult.props,
+      },
+      dropResult.id
+    );
   };
   return (
     <div className="flex p-[10px] gap-4 flex-wrap">
       <ComponentItem
         name={ItemType.Button}
         description="按钮"
+        onDragEnd={onDragEnd}
+      />
+      <ComponentItem
+        name={ItemType.Space}
+        description="Space"
         onDragEnd={onDragEnd}
       />
     </div>

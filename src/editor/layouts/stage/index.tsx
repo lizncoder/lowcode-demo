@@ -3,8 +3,10 @@ import { useDrop } from "react-dnd";
 import { Component } from "@/editor/stores/components";
 import { ItemType } from "@/editor/item-type";
 import { useComponents } from "@/editor/stores/components";
+
 import Space from "@/editor/components/space";
 import Button from "@/editor/components/button";
+
 import SelectedMask from "@/editor/common/selected-mask";
 const ComponentMap: { [key: string]: any } = {
   Button: Button,

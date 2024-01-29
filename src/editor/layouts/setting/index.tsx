@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 import { Form, Select, Input } from "antd";
 import { ItemType } from "@/editor/item-type";
 import { useComponents } from "@/editor/stores/components";

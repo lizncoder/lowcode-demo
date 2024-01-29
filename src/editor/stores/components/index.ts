@@ -28,10 +28,13 @@ interface State {
   components: Component[];
 
   //当前需那种组件Id
-  curComponentId?: number;
+  curComponentId?: number | null;
 
   //当前选中的组件
   curComponent?: Component | null;
+
+  //模式
+  mode: "edit" | "preview";
 }
 
 interface Action {
@@ -47,7 +50,7 @@ interface Action {
    * @param id 选中组件Id
    * @returns
    */
-  setCurComponentId: (componentId: number) => void;
+  setCurComponentId: (componentId: number | null) => void;
 
   /**
    * 更新组件属性函数
@@ -56,10 +59,18 @@ interface Action {
    * @returns ComponentProps
    */
   updateComponentProps: (componentId: number, props: any) => void;
+
+  /**
+   * 设置模式
+   * @param mode 模式
+   * @returns
+   */
+  setMode: (mode: State["mode"]) => void;
 }
 
 export const useComponents = create<State & Action>((set) => ({
   components: [],
+  mode: "edit",
   addComponent: (component, parentId) => {
     set((state) => {
       if (parentId) {
@@ -92,6 +103,9 @@ export const useComponents = create<State & Action>((set) => ({
       const cs = updateComponentById(componentId, props, state.components);
       return { ...state, components: cs };
     });
+  },
+  setMode: (mode) => {
+    set((state) => ({ ...state, mode }));
   },
 }));
 

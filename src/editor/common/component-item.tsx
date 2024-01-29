@@ -23,7 +23,6 @@ const ComponentItem: FC<ComponentItemProps> = ({
     type: name,
     end: (_, monitor) => {
       const dropResult = monitor.getDropResult();
-      console.log("dropResult:", dropResult);
 
       if (!dropResult) return;
 

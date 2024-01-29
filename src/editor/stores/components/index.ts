@@ -1,5 +1,5 @@
 import { create } from "zustand";
-
+import { clone } from "lodash";
 //组件数据结构
 export interface Component {
   /**
@@ -24,7 +24,14 @@ export interface Component {
 }
 
 interface State {
+  //生成的组件数组
   components: Component[];
+
+  //当前需那种组件Id
+  curComponentId?: number;
+
+  //当前选中的组件
+  curComponent?: Component | null;
 }
 
 interface Action {
@@ -34,6 +41,21 @@ interface Action {
    * @returns
    */
   addComponent: (component: Component, parentId: number) => void;
+
+  /**
+   * 设置当前选中组件Id
+   * @param id 选中组件Id
+   * @returns
+   */
+  setCurComponentId: (componentId: number) => void;
+
+  /**
+   * 更新组件属性函数
+   * @param componentId 组件Id
+   * @param props 组件属性
+   * @returns ComponentProps
+   */
+  updateComponentProps: (componentId: number, props: any) => void;
 }
 
 export const useComponents = create<State & Action>((set) => ({
@@ -50,26 +72,41 @@ export const useComponents = create<State & Action>((set) => ({
             parentComponent.children = [component];
           }
         }
-        return { components: [...state.components] };
+        return { ...state };
       }
 
       return {
+        ...state,
         components: [...state.components, component],
       };
+    });
+  },
+  setCurComponentId: (componentId) => {
+    set((state) => {
+      const curCom = getComponentById(componentId, state.components);
+      return { ...state, curComponentId: componentId, curComponent: curCom };
+    });
+  },
+  updateComponentProps: (componentId, props) => {
+    set((state) => {
+      const cs = updateComponentById(componentId, props, state.components);
+      return { ...state, components: cs };
     });
   },
 }));
 
 /**
  * 根据Id递归查找父组件
- *
+ * @param id 选中组件id
+ * @param components 组件数组
+ * @returns
  */
 const getComponentById = (
   id: number,
   components: Component[]
 ): Component | null => {
   for (const component of components) {
-    if (component.id === id) {
+    if (component.id == Number(id)) {
       return component;
     }
     if (component.children && component.children.length > 0) {
@@ -80,4 +117,29 @@ const getComponentById = (
     }
   }
   return null;
+};
+
+/**
+ * 更新组件属性
+ * @param id 组件Id
+ * @param props 组件属性
+ * @param components 组件数组
+ * @returns 组价数组
+ */
+const updateComponentById = (
+  id: number,
+  props: any,
+  components: Component[]
+): Component[] => {
+  const coms = clone(components);
+  for (const component of coms) {
+    if (component.id == Number(id)) {
+      component.props = { ...component.props, ...props };
+    }
+    if (component.children && component.children.length > 0) {
+      updateComponentById(id, props, component.children);
+    }
+  }
+
+  return coms;
 };

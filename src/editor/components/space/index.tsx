@@ -2,16 +2,17 @@ import { FC } from "react";
 import { Space as AntdSpace } from "antd";
 import { useDrop } from "react-dnd";
 import { ItemType } from "@/editor/item-type";
-
 interface Props {
   //当前组件的子节点
   children: any;
 
   //当前组件id
   id: number;
+
+  ["data-component-id"]: number;
 }
 
-const Space: FC<Props> = ({ children, id }) => {
+const Space: FC<Props> = ({ children, id, ...args }) => {
   //组件放置监听
   const [{ canDrop }, drop] = useDrop(() => ({
     accept: [ItemType.Space, ItemType.Button],
@@ -38,6 +39,7 @@ const Space: FC<Props> = ({ children, id }) => {
         ref={drop}
         className="p-[16px]"
         style={{ border: canDrop ? "1px solid green" : "1px solid #ccc" }}
+        {...args}
       >
         暂无内容
       </AntdSpace>
@@ -49,6 +51,7 @@ const Space: FC<Props> = ({ children, id }) => {
       ref={drop}
       className="p-[16px]"
       style={{ border: canDrop ? "1px solid green" : "1px solid #ccc" }}
+      {...args}
     >
       {children}
     </AntdSpace>

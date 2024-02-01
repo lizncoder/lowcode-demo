@@ -1,12 +1,20 @@
+import { useState } from "react";
 import { Button, Space } from "antd";
 import { useComponents } from "@/editor/stores/components";
-
+import ComponentTree from "./component-tree";
 const Header = () => {
   const { mode, setMode, setCurComponentId } = useComponents();
+  const [open, setOpen] = useState(false);
+
+  //打开组件树抽屉
+  const onCancel = () => {
+    setOpen((state) => !state);
+  };
 
   return (
     <div className="flex justify-end w-[100%] px-[24px]">
       <Space>
+        <Button onClick={onCancel}>查看大纲</Button>
         {mode === "edit" && (
           <Button
             onClick={() => {
@@ -25,10 +33,11 @@ const Header = () => {
             }}
             type="primary"
           >
-            编辑
+            退出预览
           </Button>
         )}
       </Space>
+      <ComponentTree open={open} onCancel={onCancel} />
     </div>
   );
 };

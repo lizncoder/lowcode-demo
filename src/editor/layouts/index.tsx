@@ -25,7 +25,7 @@ const Layout = () => {
             <Allotment.Pane>
               <Stage />
             </Allotment.Pane>
-            <Allotment.Pane minSize={200} maxSize={400} preferredSize={200}>
+            <Allotment.Pane minSize={300} maxSize={400} preferredSize={200}>
               <Setting />
             </Allotment.Pane>
           </Allotment>

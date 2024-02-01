@@ -1,104 +1,33 @@
-import { useEffect } from "react";
-import { Form, Select, Input } from "antd";
-import { ItemType } from "@/editor/item-type";
+import { useState, useEffect } from "react";
+import { Segmented } from "antd";
 import { useComponents } from "@/editor/stores/components";
+import ComponentAttr from "./attr";
+import ComponentEvent from "./event";
 
-const componentSettingMap = {
-  [ItemType.Button]: [
-    {
-      name: "type",
-      label: "按钮类型",
-      type: "select",
-      options: [
-        {
-          label: "主按钮",
-          value: "primary",
-        },
-        {
-          label: "次按钮",
-          value: "default",
-        },
-      ],
-    },
-    {
-      name: "children",
-      label: "文本",
-      type: "input",
-    },
-  ],
-  [ItemType.Space]: [
-    {
-      name: "size",
-      label: "间距大小",
-      type: "select",
-      options: [
-        {
-          label: "大",
-          value: "large",
-        },
-        {
-          label: "中",
-          value: "middle",
-        },
-        {
-          label: "小",
-          value: "small",
-        },
-      ],
-    },
-  ],
-};
+const Setting = () => {
+  const { curComponentId, curComponent } = useComponents();
 
-const index = () => {
-  const { curComponent, curComponentId, updateComponentProps } =
-    useComponents();
-
-  const [form] = Form.useForm();
+  const [key, setKey] = useState<string | number>("属性");
 
   useEffect(() => {
-    // 初始化表单
-    form.setFieldsValue(curComponent?.props);
-  }, [curComponent]);
-
-  const renderFormElement = (setting: any) => {
-    const { type, options } = setting;
-    if (type === "select") {
-      return <Select options={options}></Select>;
-    } else if (type === "input") {
-      return <Input />;
-    }
-  };
-
-  const valueChange = (changesValues: any) => {
-    if (curComponentId) {
-      updateComponentProps(curComponentId, changesValues);
-    }
-  };
+    setKey("属性");
+  }, [curComponentId]);
 
   if (!curComponentId || !curComponent) return null;
 
   return (
-    <div className="pt-[20px]">
-      <Form
-        form={form}
-        onValuesChange={valueChange}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 14 }}
-      >
-        {(componentSettingMap[curComponent!.name] || []).map((setting) => {
-          return (
-            <Form.Item
-              name={setting.name}
-              label={setting.label}
-              key={setting.name}
-            >
-              {renderFormElement(setting)}
-            </Form.Item>
-          );
-        })}
-      </Form>
+    <div>
+      <Segmented
+        block
+        value={key}
+        options={["属性", "事件"]}
+        onChange={(val: string | number) => setKey(val)}
+      />
+      <div className="pt-[20px]">
+        {key === "属性" && <ComponentAttr />}
+        {key === "事件" && <ComponentEvent />}
+      </div>
     </div>
   );
 };
-
-export default index;
+export default Setting;

@@ -116,7 +116,7 @@ export const useComponents = create<State & Action>((set) => ({
  * @returns
  */
 const getComponentById = (
-  id: number,
+  id: number | null,
   components: Component[]
 ): Component | null => {
   for (const component of components) {

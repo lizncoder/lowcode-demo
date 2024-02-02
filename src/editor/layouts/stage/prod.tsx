@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 import { message } from "antd";
+
 import Space from "@/editor/components/space";
 import Button from "@/editor/components/button";
 
@@ -13,6 +14,8 @@ const ComponentMap: { [key: string]: any } = {
 
 const ProdStage = () => {
   const { components } = useComponents();
+
+  const componentRefs = useRef<any>({});
 
   //事件处理
   const handleEvent = (component: Component) => {
@@ -29,6 +32,12 @@ const ProdStage = () => {
                 message.success(config.text);
               } else if (config.type === "error") {
                 message.error(config.text);
+              }
+            } else if (type === "componentFunction") {
+              //获取需要发生事件的组件ref
+              const component = componentRefs.current[config.componentId];
+              if (component) {
+                component?.[config.method]();
               }
             }
           };
@@ -50,6 +59,9 @@ const ProdStage = () => {
           {
             key: component.id,
             id: component.id,
+            ref: (ref) => {
+              componentRefs.current[component.id] = ref;
+            },
             ...handleEvent(component),
           },
           component.props.children || renderComponents(component.children || [])

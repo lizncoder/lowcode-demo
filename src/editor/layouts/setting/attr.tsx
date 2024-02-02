@@ -18,6 +18,10 @@ const componentSettingMap = {
           label: "次按钮",
           value: "default",
         },
+        {
+          label: "虚线",
+          value: "dashed",
+        },
       ],
     },
     {

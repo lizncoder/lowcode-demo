@@ -1,6 +1,10 @@
-import { Collapse, Input, Select } from "antd";
-import { useComponents } from "@/editor/stores/components";
-import { componentEventMap } from "@/editor/types/layouts/componentEventMapType";
+import { useState } from "react";
+import { Collapse, Input, Select, TreeSelect } from "antd";
+import { useComponents, type Component } from "@/editor/stores/components";
+import {
+  componentEventMap,
+  componentMethodMap,
+} from "@/editor/types/layouts/componentEventMapType";
 
 //事件数据类型
 // type eventType = {
@@ -22,8 +26,11 @@ import { componentEventMap } from "@/editor/types/layouts/componentEventMapType"
 // };
 
 const Event = () => {
-  const { curComponent, curComponentId, updateComponentProps } =
+  const { components, curComponent, curComponentId, updateComponentProps } =
     useComponents();
+  const [selectedComponent, setSelectedComponent] = useState<Component | null>(
+    null
+  );
 
   //事件类型改变
   const typeChange = (eventName: string, value: string) => {
@@ -58,6 +65,54 @@ const Event = () => {
       },
     });
   };
+
+  //找到组件事件选中的组件
+  const handleSelectedComponent = (
+    componentId: number,
+    components: Component[]
+  ) => {
+    for (const component of components) {
+      if (component.id === componentId) {
+        return component;
+      }
+      handleSelectedComponent(componentId, component.children ?? []);
+    }
+    return null;
+  };
+
+  //更改组件事件
+  const componentChange = (eventName: string, value: string | number) => {
+    if (!curComponentId) return;
+
+    //查找选中的组件
+    const selectedCom = handleSelectedComponent(value as number, components);
+    setSelectedComponent(selectedCom);
+
+    updateComponentProps(curComponentId, {
+      [eventName]: {
+        ...curComponent?.props[eventName],
+        config: {
+          ...curComponent?.props[eventName].config,
+          componentId: value,
+        },
+      },
+    });
+  };
+
+  //注册组件执行的事件
+  const componentMethodChange = (eventName: string, value: string | number) => {
+    if (!curComponentId) return;
+    updateComponentProps(curComponentId, {
+      [eventName]: {
+        ...curComponent?.props[eventName],
+        config: {
+          ...curComponent?.props[eventName].config,
+          method: value,
+        },
+      },
+    });
+  };
+
   if (!curComponent || !curComponentId) return null;
 
   return (
@@ -75,6 +130,10 @@ const Event = () => {
                       {
                         label: "显示提示",
                         value: "showMessage",
+                      },
+                      {
+                        label: "组件方法",
+                        value: "componentFunction",
                       },
                     ]}
                     onChange={(value) => {
@@ -131,6 +190,50 @@ const Event = () => {
                       />
                     </div>
                   </div>
+                </div>
+              )}
+              {curComponent?.props?.[setting?.name]?.type ===
+                "componentFunction" && (
+                <div className="flex flex-col gap-[12px] mt-[12px]">
+                  <div className="flex items-center gap-[10px]">
+                    <div>组件：</div>
+                    <div>
+                      <TreeSelect
+                        style={{ width: 160 }}
+                        treeData={components}
+                        fieldNames={{ label: "name", value: "id" }}
+                        value={
+                          curComponent?.props?.[setting?.name]?.config
+                            ?.componentId
+                        }
+                        onChange={(value) =>
+                          componentChange(setting.name, value)
+                        }
+                      />
+                    </div>
+                  </div>
+                  {componentMethodMap[selectedComponent?.name ?? ""] && (
+                    <div className="flex items-center gap-[10px]">
+                      <div>方法：</div>
+                      <div>
+                        <Select
+                          className="w-[160px]"
+                          options={componentMethodMap[
+                            selectedComponent?.name || ""
+                          ].map((method) => ({
+                            label: method.label,
+                            value: method.name,
+                          }))}
+                          value={
+                            curComponent?.props?.[setting?.name]?.config?.method
+                          }
+                          onChange={(value) =>
+                            componentMethodChange(setting.name, value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </Collapse.Panel>

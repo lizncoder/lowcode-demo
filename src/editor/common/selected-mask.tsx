@@ -69,7 +69,7 @@ const SelectedMask = (
         width: position.width,
         height: position.height,
         backgroundColor: "rgba(66,133,244,0.2)",
-        border: "1px solid rgb(66,133,244)",
+        border: "1px dashed rgb(66,133,244)",
         pointerEvents: "none",
         zIndex: 1003,
         borderRadius: "4px",

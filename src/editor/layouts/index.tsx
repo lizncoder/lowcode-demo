@@ -10,7 +10,10 @@ import { useComponents } from "@/editor/stores/components";
 
 const Layout = () => {
   const { mode } = useComponents();
-
+  const modules = import.meta.glob("@/editor/components/*/index.tsx", {
+    eager: true,
+  });
+  console.log("modules", modules);
   return (
     <>
       <div className="h-[50px] flex items-center bg-red-300">

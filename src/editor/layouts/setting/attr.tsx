@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Form, Select, Input } from "antd";
 import { ItemType } from "@/editor/item-type";
 import { useComponents } from "@/editor/stores/components";
-
+// import SettingFormItemInput from "@/editor/common/setting-form-item/input";
+import { TestDemo } from "@/editor/common/setting-form-item/testdemo";
 const componentSettingMap = {
   [ItemType.Button]: [
     {
@@ -70,7 +71,7 @@ const Attr = () => {
     if (type === "select") {
       return <Select options={options}></Select>;
     } else if (type === "input") {
-      return <Input />;
+      return <TestDemo />;
     }
   };
 

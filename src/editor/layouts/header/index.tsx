@@ -2,19 +2,26 @@ import { useState } from "react";
 import { Button, Space } from "antd";
 import { useComponents } from "@/editor/stores/components";
 import ComponentTree from "./component-tree";
+import DefineVariable from "./define-variable";
 const Header = () => {
   const { mode, setMode, setCurComponentId } = useComponents();
   const [open, setOpen] = useState(false);
 
+  const [variableOpen, setVariableOpen] = useState(false);
   //打开组件树抽屉
   const onCancel = () => {
     setOpen((state) => !state);
   };
 
+  //打开定义变量弹窗
+  const onCancelVariable = () => {
+    setVariableOpen((state) => !state);
+  };
   return (
     <div className="flex justify-end w-[100%] px-[24px]">
       <Space>
         <Button onClick={onCancel}>查看大纲</Button>
+        <Button onClick={onCancelVariable}>定义变量</Button>
         {mode === "edit" && (
           <Button
             onClick={() => {
@@ -38,6 +45,7 @@ const Header = () => {
         )}
       </Space>
       <ComponentTree open={open} onCancel={onCancel} />
+      <DefineVariable open={variableOpen} onCancel={onCancelVariable} />
     </div>
   );
 };

@@ -7,7 +7,7 @@ interface Props {
   [key: string]: string;
 }
 
-const index = ({ children, ...args }: Props, ref: any) => {
+const prod = (props: Props, ref: any) => {
   const [loading, setLoading] = useState(false);
 
   useImperativeHandle(ref, () => {
@@ -22,10 +22,10 @@ const index = ({ children, ...args }: Props, ref: any) => {
   });
 
   return (
-    <AntdButton loading={loading} {...args}>
-      {children}
+    <AntdButton loading={loading} {...props}>
+      {props.text}
     </AntdButton>
   );
 };
 
-export default forwardRef(index);
+export default forwardRef(prod);

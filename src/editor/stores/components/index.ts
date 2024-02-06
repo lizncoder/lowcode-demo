@@ -71,6 +71,7 @@ interface Action {
 export const useComponents = create<State & Action>((set) => ({
   components: [],
   mode: "edit",
+
   addComponent: (component, parentId) => {
     set((state) => {
       if (parentId) {
@@ -92,18 +93,21 @@ export const useComponents = create<State & Action>((set) => ({
       };
     });
   },
+
   setCurComponentId: (componentId) => {
     set((state) => {
       const curCom = getComponentById(componentId, state.components);
       return { ...state, curComponentId: componentId, curComponent: curCom };
     });
   },
+
   updateComponentProps: (componentId, props) => {
     set((state) => {
       const cs = updateComponentById(componentId, props, state.components);
       return { ...state, components: cs };
     });
   },
+
   setMode: (mode) => {
     set((state) => ({ ...state, mode }));
   },
